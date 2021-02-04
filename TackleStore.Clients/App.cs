@@ -19,8 +19,8 @@ namespace TackleStore.Clients
                     services.AddBlazorHybrid();
 
                     // Register app-specific services
-                    services.AddSingleton<CounterState>();
-                    //services.AddSingleton<ShellNavigationManager>();
+                
+                    services.AddSingleton<ShellNavigationManager>();
                 })
                 .UseWebRoot("wwwroot");
 
