@@ -1,0 +1,43 @@
+﻿
+
+@using TackleStore.Clients.Services
+@using TackleStore.Models;
+
+@*@inject ShellNavigationManager NavigationManager*@
+
+<ContentPage>
+    <StackLayout Padding="new Thickness(10)">
+        @foreach (var category in Items)
+        {
+            <ContentView Padding="new Thickness(0,5)">
+                <TapGestureRecognizer OnTapped="@CategoryTapped" />
+                <Label Text="@category.Title" />
+            </ContentView>
+
+        }
+    </StackLayout>
+</ContentPage>
+
+@code {
+
+    private List<Category> Items = new List<Category>();
+
+    private void CategoryTapped()
+    {
+
+    }
+
+    protected async override Task OnInitializedAsync()
+    {
+        await base.OnInitializedAsync();
+
+        var categories = await CategoriesService.GetCategories();
+
+        Items = categories;
+    }
+
+    protected override void OnAfterRender(bool firstRender)
+    {
+        base.OnAfterRender(firstRender);
+    }
+}
