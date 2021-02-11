@@ -1,4 +1,6 @@
-﻿@using TackleStore.Clients.Services
+﻿@page "/categories/{CategoryId}"
+
+@using TackleStore.Clients.Services
 @using TackleStore.Models;
 
 @inject ShellNavigationManager NavigationManager
@@ -18,15 +20,25 @@
 
 @code {
 
+    private static Category CurrentCategory { get; set; }
+
     private List<Category> Items = new List<Category>();
 
-    [Parameter] public int CategoryId { get; set; }
+    [Parameter] public string CategoryId { get; set; }
 
     private void CategoryTapped(Category category)
     {
         if (category != null)
         {
-           // NavigationManager.NavigateToAsync($"/categories/{category.Id}");
+            CurrentCategory = category;
+
+            if (CurrentCategory.SubCategories.Any())
+            {
+                NavigationManager.NavigateToAsync($"/categories/{category.Id}");
+                return;
+            }
+
+            NavigationManager.NavigateToAsync($"/products/{category.Id}");
         }
     }
 
@@ -36,7 +48,14 @@
 
         var categories = await CategoriesService.GetCategories();
 
-        Items = categories;
+        if(CurrentCategory is null)
+        {
+            Items = categories;
+            return;
+        }
+
+        Items = CurrentCategory.SubCategories;
+
     }
 
     protected override void OnAfterRender(bool firstRender)

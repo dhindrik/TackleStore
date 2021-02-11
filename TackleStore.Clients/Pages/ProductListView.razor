@@ -1,0 +1,49 @@
+﻿@page "/products/{CategoryId}"
+@using TackleStore.Clients.Services
+@using TackleStore.Models
+
+@inject ShellNavigationManager NavigationManager
+
+<StackLayout>
+    @foreach (var product in Products)
+    {
+        <Grid ColumnDefinitions="100" RowDefinitions="*, 1">
+            <TapGestureRecognizer OnTapped="@(async(x) => await ProductTapped(product))" />
+            <GridCell Column="0" Row="0">
+                <Image HeightRequest="50" WidthRequest="50" Source="@product.Images.FirstOrDefault()" Aspect="Aspect.AspectFill" /> <Image HeightRequest="50" WidthRequest="50" Source="@product.Images.FirstOrDefault()" Aspect="Aspect.AspectFill" />
+            </GridCell>
+            <GridCell Column="1" Row="0">
+                <StackLayout>
+                    <Label Text="@product.Title" FontAttributes="FontAttributes.Bold" />
+                    <Label Text="@product.Price.ToString("C2")" />
+                </StackLayout>
+            </GridCell>
+            <GridCell Row="1" Column="0" ColumnSpan="2">
+                <BoxView HeightRequest="1" Color="Color.LightGray" />
+            </GridCell>
+        </Grid>
+
+    }
+</StackLayout>
+
+@code {
+    [Parameter] public string CategoryId { get; set; }
+
+    private List<Product> Products { get; set; } = new List<Product>();
+
+    protected async override Task OnInitializedAsync()
+    {
+        await base.OnInitializedAsync();
+
+        if (int.TryParse(CategoryId, out int id))
+        {
+            Products = await ProductService.Get(id);
+        }
+
+    }
+
+    private async Task ProductTapped(Product product)
+    {
+        await NavigationManager.NavigateToAsync($"/product/{product.Sku}");
+    }
+}

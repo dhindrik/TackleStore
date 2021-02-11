@@ -25,6 +25,6 @@
     <Folder Include="Services\" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\TackleStore.Api\TackleStore.Models\TackleStore.Models.csproj" />
+    <ProjectReference Include="..\TackleStore.Models\TackleStore.Models.csproj" />
   </ItemGroup>
 </Project>

@@ -1,0 +1,41 @@
+﻿@page "/product/{Sku}"
+
+<Grid Padding="new Thickness(20)" RowDefinitions="250, Auto, Auto, *">
+    @if (Product.Images.Any())
+    {
+        <GridCell>
+            <Image Margin="new Thickness(-20,-20,-20, 0)" HeightRequest="250" Aspect="Aspect.AspectFill" Source="@Product.Images.First()" />
+        </GridCell>
+    }
+
+    <GridCell Row="1">
+        <StackLayout>
+            <Label Text="@Product.Title"
+                   FontSize="Device.GetNamedSize(NamedSize.Title, typeof(Xamarin.Forms.Label))" />
+            <Label Text="@Product.Price.ToString("C2")" />
+        </StackLayout>
+    </GridCell>
+
+    <GridCell Row="2">
+        <BlazorWebView HorizontalOptions="LayoutOptions.Fill">
+            <TackleStore.Clients.WebUI.Shared.Specifications Product="@Product" />
+        </BlazorWebView>
+    </GridCell>
+    <GridCell Row="3">
+        <Label Text="Bottom label" />
+    </GridCell>
+</Grid>
+
+@code {
+
+    [Parameter] public string Sku { get; set; }
+
+    private Product Product { get; set; }
+
+    protected async override Task OnInitializedAsync()
+    {
+        await base.OnInitializedAsync();
+
+        Product = await ProductService.GetProduct(Sku);
+    }
+}
