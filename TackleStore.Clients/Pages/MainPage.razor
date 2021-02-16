@@ -1,5 +1,23 @@
 ﻿<ContentPage>
     <StackLayout>
-        <Label Text="Hi" />
+
+        @if (Product != null)
+        {
+            <TackleStore.Clients.Components.ProductItem Product="@Product" />
+        }
     </StackLayout>
 </ContentPage>
+
+@code{
+    private Product Product { get; set; }
+
+    protected async override Task OnInitializedAsync()
+    {
+        await base.OnInitializedAsync();
+
+        //Remove later
+        _= await ProductService.Get(1);
+
+        Product = await ProductService.GetProduct("colmic-jig");
+    }
+}

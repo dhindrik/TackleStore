@@ -12,17 +12,23 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
     <DebugType>portable</DebugType>
     <DebugSymbols>true</DebugSymbols>
+    <LangVersion>latestmajor</LangVersion>
   </PropertyGroup>
 
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <LangVersion>latestmajor</LangVersion>
+  </PropertyGroup>
   <ItemGroup>
     <PackageReference Include="Microsoft.MobileBlazorBindings" Version="0.5.50-preview" />
     <PackageReference Include="System.Net.Http.Json" Version="3.2.1" />
     <PackageReference Include="Xamarin.Essentials" Version="1.5.3.2" />
     <PackageReference Include="Xamarin.Forms" Version="5.0.0.1931" />
+    <PackageReference Include="tinypubsub" Version="1.2.77" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Pages\" />
     <Folder Include="Services\" />
+    <Folder Include="Components\" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\TackleStore.Models\TackleStore.Models.csproj" />

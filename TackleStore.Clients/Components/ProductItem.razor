@@ -1,0 +1,29 @@
+﻿@inject ShellNavigationManager NavigationManager
+
+
+<Grid ColumnDefinitions="100" RowDefinitions="*, 1">
+    <TapGestureRecognizer OnTapped="@(async(x) => await ProductTapped(Product))" />
+    <GridCell Column="0" Row="0">
+        <Image HeightRequest="50" WidthRequest="50" Source="@Product.Images.FirstOrDefault()" Aspect="Aspect.AspectFill" />
+        <Image HeightRequest="50" WidthRequest="50" Source="@Product.Images.FirstOrDefault()" Aspect="Aspect.AspectFill" />
+    </GridCell>
+    <GridCell Column="1" Row="0">
+        <StackLayout>
+            <Label Text="@Product.Title" FontAttributes="FontAttributes.Bold" />
+            <Label Text="@Product.Price.ToString("C2")" />
+        </StackLayout>
+    </GridCell>
+    <GridCell Row="1" Column="0" ColumnSpan="2">
+        <BoxView HeightRequest="1" Color="Color.LightGray" />
+    </GridCell>
+</Grid>
+
+@code {
+
+    [Parameter] public Product Product { get; set; }
+
+    private async Task ProductTapped(Product product)
+    {
+        await NavigationManager.NavigateToAsync($"/product/{product.Sku}");
+    }
+}

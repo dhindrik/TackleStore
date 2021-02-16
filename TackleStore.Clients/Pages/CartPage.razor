@@ -1,0 +1,33 @@
+﻿@using TinyPubSubLib
+<ContentPage>
+    <StackLayout>
+        @foreach (var item in Items)
+        {
+        <StackLayout Orientation="StackOrientation.Horizontal">
+            <Image Source="@item.Product.Images.FirstOrDefault()" />
+            <Label Text="@item.Product.Title" />
+            <Label Text="@item.Quantity.ToString()" />
+        </StackLayout>
+            
+        }
+    </StackLayout>
+</ContentPage>
+@code {
+
+    private List<CartItem> Items { get; set; } = new List<CartItem>();
+
+    protected async override Task OnInitializedAsync()
+    {
+        await base.OnInitializedAsync();
+
+        var items = await CartService.Get();
+
+        Items.AddRange(items);
+
+        TinyPubSub.Subscribe("cart-updated", async() =>
+        {
+            Items = await CartService.Get();
+            StateHasChanged();
+        });
+    }
+}
