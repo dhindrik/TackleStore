@@ -12,6 +12,27 @@ namespace TackleStore.Clients.Services
     {
         public Product Product { get; set; }
         public int Quantity { get; set; }
+        public string QuantityText
+        {
+            get => Quantity.ToString();
+            set {
+                if(int.TryParse(value, out int result))
+                {
+                    Quantity = result;
+                }
+                else if(string.IsNullOrWhiteSpace(value))
+                {
+                    Quantity = 0;
+                }
+            } 
+        }
+        public double TotalPrice
+        {
+            get
+            {
+                return Quantity * Product.Price;
+            }
+        }
     }
 
     public class CartService

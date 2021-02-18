@@ -1,33 +1,95 @@
 ﻿@using TinyPubSubLib
 <ContentPage>
-    <StackLayout>
-        @foreach (var item in Items)
-        {
-        <StackLayout Orientation="StackOrientation.Horizontal">
-            <Image Source="@item.Product.Images.FirstOrDefault()" />
-            <Label Text="@item.Product.Title" />
-            <Label Text="@item.Quantity.ToString()" />
-        </StackLayout>
-            
-        }
-    </StackLayout>
+    <Grid RowDefinitions="*, 100, 100">
+        <GridCell>
+            <ScrollView>
+                <StackLayout>
+                    @foreach (var item in Items)
+                    {
+                        <Grid ColumnDefinitions="100, *, *, *"
+                              RowDefinitions="*,*,1">
+                            <GridCell Column="0" RowSpan="2">
+                                <Image Aspect="Aspect.AspectFill" Source="@item.Product.Images.FirstOrDefault()" />
+                            </GridCell>
+                            <GridCell Column="1" ColumnSpan="3">
+                                <Label VerticalOptions="LayoutOptions.Center" Text="@item.Product.Title" FontAttributes="FontAttributes.Bold" />
+                            </GridCell>
+                            <GridCell Column="1" Row="1">
+                                <Label VerticalOptions="LayoutOptions.Center" Text="@item.Product.Price.ToString("C")" />
+                            </GridCell>
+                            <GridCell Column="2" Row="1">
+                                <Entry VerticalOptions="LayoutOptions.Center" @bind-Text="@item.QuantityText" OnUnfocused="EntryUnfocused" />
+                            </GridCell>
+                            <GridCell Column="3" Row="1">
+                                @{
+                                    var totalPrice = item.Quantity * item.Product.Price;
+                                }
+                                <Label VerticalOptions="LayoutOptions.Center" Text="@totalPrice.ToString("C")" />
+                            </GridCell>
+                            <GridCell Row="2" ColumnSpan="4">
+                                <TackleStore.Clients.Components.Seperator />
+                            </GridCell>
+                        </Grid>
+
+                    }
+                </StackLayout>
+            </ScrollView>
+        </GridCell>
+        <GridCell Row="1">
+            <ContentView Padding="new Thickness(10)" BackgroundColor="Color.LightGray">
+                <StackLayout>
+                    <StackLayout Orientation="StackOrientation.Horizontal">
+                        <Label Text="Total price: " FontAttributes="FontAttributes.Bold" />
+                        <Label Text="@TotalPrice.ToString("C")" />
+                    </StackLayout>
+                    <StackLayout Orientation="StackOrientation.Horizontal">
+                        <Label Text="Number of items: " FontAttributes="FontAttributes.Bold" />
+                        <Label Text="@NumberOfItems.ToString()" />
+                    </StackLayout>
+                </StackLayout>
+            </ContentView>
+        </GridCell>
+    </Grid>
 </ContentPage>
 @code {
 
+
+
     private List<CartItem> Items { get; set; } = new List<CartItem>();
+    private double TotalPrice { get; set; } = 0;
+    private int NumberOfItems => Items.Sum(x => x.Quantity);
 
     protected async override Task OnInitializedAsync()
     {
         await base.OnInitializedAsync();
 
         var items = await CartService.Get();
-
         Items.AddRange(items);
+
+        CalculateTotalPrice();
 
         TinyPubSub.Subscribe("cart-updated", async() =>
         {
             Items = await CartService.Get();
+            CalculateTotalPrice();
             StateHasChanged();
         });
+    }
+
+    private void EntryUnfocused()
+    {
+        CalculateTotalPrice();
+    }
+
+    public void CalculateTotalPrice()
+    {
+        double price = 0;
+
+        foreach(var item in Items)
+        {
+            price += item.TotalPrice;
+        }
+
+        TotalPrice = price;
     }
 }
