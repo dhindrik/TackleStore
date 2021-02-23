@@ -4,6 +4,24 @@ html, body {
     font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
 }
 
+.left
+{
+    float:left
+}
+
+.right {
+    float: right
+}
+
+.main-content
+{
+    padding:10px;
+}
+
+.product-image {
+    width: 100%
+}
+
 a, .btn-link {
     color: #0366d6;
 }

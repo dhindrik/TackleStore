@@ -39,20 +39,20 @@ namespace TackleStore.Clients.Services
     {
         public static List<CartItem> items = new ();
 
-        public static Task Add(Product product)
+        public static Task Add(Product product, int quantity = 1)
         {
             var item = items.SingleOrDefault(x => x.Product.Sku == product.Sku);
 
             if (item != null)
             {
-                item.Quantity++;
+                item.Quantity += quantity;
                 return Task.CompletedTask;
             }
 
             item = new CartItem()
             {
                 Product = product,
-                Quantity = 1
+                Quantity = quantity
             };
 
             items.Add(item);

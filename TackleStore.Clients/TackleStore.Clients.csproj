@@ -29,6 +29,7 @@
     <Folder Include="Pages\" />
     <Folder Include="Services\" />
     <Folder Include="Components\" />
+    <Folder Include="FormModels\" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\TackleStore.Models\TackleStore.Models.csproj" />

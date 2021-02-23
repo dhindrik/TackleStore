@@ -1,0 +1,74 @@
+﻿@if (Item != null)
+{
+    if (Item.Images.Any())
+    {
+        <div class="carousel slide" data-bs-ride="carousel">
+            <div class="carousel-inner">
+                <div class="carousel-item active">
+                    <img src="@Item.Images[CurrentImage]" class="d-block w-100" alt="...">
+                </div>
+            </div>
+        </div>
+
+    }
+
+<div class="main-content">
+    <button class="btn btn-primary" @onclick="@Prev">Prevoius</button>
+    <button class="btn btn-primary" @onclick="@Next">Next</button>
+
+    <h2>@Item.Title</h2>
+    <span>@Item.Price</span>
+    <EditForm Model="@FormModel" OnValidSubmit="@AddToCart">
+        <InputText @bind-Value="FormModel.Quantity" />
+        <button type="submit" class="btn btn-primary">Add to cart</button>
+    </EditForm>
+    <p>@Item.Description</p>
+
+</div>
+}
+
+@code {
+    private AddToCartForm FormModel { get; } = new AddToCartForm();
+
+    [Parameter] public string Sku { get; set; }
+
+    private Product Item { get; set; }
+
+    private int CurrentImage { get; set; }
+
+
+    protected async override Task OnInitializedAsync()
+    {
+        await base.OnInitializedAsync();
+
+        Item = await ProductService.GetProduct(Sku);
+
+        Item.Images.Add("https://cdn.shopify.com/s/files/1/0479/4662/9285/products/Colmic_Balans2_960x.jpg?v=1599134542");
+        Item.Images.Add("https://cdn.shopify.com/s/files/1/0479/4662/9285/products/Colmic_Balans5_160x160.jpg?v=1599134550");
+    }
+
+    private async Task AddToCart()
+    {
+        var quantity = 0;
+
+        int.TryParse(FormModel.Quantity, out quantity);
+
+        await CartService.Add(Item, quantity);
+    }
+
+    private void Prev()
+    {
+        if (CurrentImage != 0)
+        {
+            CurrentImage--;
+        }
+    }
+
+    private void Next()
+    {
+        if (CurrentImage < Item.Images.Count - 1)
+        {
+            CurrentImage++;
+        }
+    }
+}
