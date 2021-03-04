@@ -17,12 +17,18 @@ using Microsoft.Azure.Search.Models;
 
 namespace Functions
 {
-    public static class RebuildSearchIndex
+    public class RebuildSearchIndex
     {
         private const string SearchIndexName = "products";
+        private readonly ProductIndexer productIndexer;
+
+        public RebuildSearchIndex(ProductIndexer productIndexer)
+        {
+            this.productIndexer = productIndexer;
+        }
 
         [FunctionName("RebuildSearchIndex")]
-        public static async Task<IActionResult> Run(
+        public async Task<IActionResult> Run(
             [HttpTrigger(AuthorizationLevel.Anonymous, "get", "post", Route = null)] HttpRequest req,
             ILogger log)
         {
@@ -47,8 +53,7 @@ namespace Functions
                 }
             }
 
-            var indexer = new ProductIndexer();
-            await indexer.Index(products, true);
+            await productIndexer.Index(products, true);
 
             return new OkResult();
         }

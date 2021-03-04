@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Backend.Core;
 using Microsoft.Azure.Cosmos;
 using Microsoft.Azure.Cosmos.Linq;
 using Microsoft.Azure.Search;
@@ -12,7 +13,13 @@ namespace Functions
 {
     public class ProductIndexer
     {
-        private const string SearchIndexName = "products";
+        public ProductIndexer(ICollectionsRepository collectionsRepository)
+        {
+            this.collectionsRepository = collectionsRepository;
+        }
+
+        public const string SearchIndexName = "products";
+        private readonly ICollectionsRepository collectionsRepository;
 
         public async Task Index(IEnumerable<ProductItem> products, bool recreate = false)
         {
@@ -22,19 +29,7 @@ namespace Functions
             var client = new CosmosClient(connestionString);
             var database = await client.CreateDatabaseIfNotExistsAsync("products");
 
-            var collectionsContainer = await database.Database.CreateContainerIfNotExistsAsync(new ContainerProperties("collections", "/_Partion"));
-
-            var iterator = collectionsContainer.Container.GetItemLinqQueryable<Collection>().ToFeedIterator();
-
-            var collections = new List<Collection>();
-
-            while (iterator.HasMoreResults)
-            {
-                foreach (var collection in await iterator.ReadNextAsync())
-                {
-                    collections.Add(collection);
-                }
-            }
+            var collections = await collectionsRepository.Get();
 
             var searchKey = Environment.GetEnvironmentVariable("SearchKey");
             var searchInstanceName = Environment.GetEnvironmentVariable("SearchInstanceName");
@@ -72,6 +67,8 @@ namespace Functions
                     Body = product.Body,
                     Id = product.Id,
                     Title = product.Title,
+                    Image = product.Images.FirstOrDefault() != null ? product.Images.First().Src : null,
+                    Price = product.Price,
                     CollectionNames = string.Join(' ', items)
                 };
 

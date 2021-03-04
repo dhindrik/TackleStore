@@ -10,10 +10,17 @@ using TackleStore.Models;
 
 namespace Functions
 {
-    public static class UpdateProductIndex
+    public class UpdateProductIndex
     {
+        private readonly ProductIndexer productIndexer;
+
+        public UpdateProductIndex(ProductIndexer productIndexer)
+        {
+            this.productIndexer = productIndexer;
+        }
+
         [FunctionName("UpdateProductIndex")]
-        public static async Task Run([CosmosDBTrigger(
+        public async Task Run([CosmosDBTrigger(
             databaseName: "products",
             collectionName: "products",
             ConnectionStringSetting = "CosmosDBConnection",
@@ -23,11 +30,9 @@ namespace Functions
             {
                 var products = input.Select(x => (ProductItem)(dynamic)x);
 
-                var indexer = new ProductIndexer();
-
                 if (products is not null)
                 {
-                    await indexer.Index(products);
+                    await productIndexer.Index(products);
                 }
             }
         }

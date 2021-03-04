@@ -14,7 +14,11 @@ namespace Functions
         public string Title { get; set; } = string.Empty;
         [IsSearchable, IsRetrievable(true)]
         public string? Body { get; set; }
+        [IsRetrievable(true)]
+        public string? Image { get; set; }
+        [IsRetrievable(true)]
+        public double Price { get; set; }
         [IsSearchable, IsRetrievable(false)]
-        public string CollectionNames { get; set; }
+        public string CollectionNames { get; set; } = string.Empty;
     }
 }
