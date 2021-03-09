@@ -68,7 +68,7 @@ namespace Functions
                     Id = product.Id,
                     Title = product.Title,
                     Image = product.Images.FirstOrDefault() != null ? product.Images.First().Src : null,
-                    Price = product.Price,
+                    Price = product.Variants.OrderByDescending(x => x.Price).Select(x => x.Price).FirstOrDefault(),
                     CollectionNames = string.Join(' ', items)
                 };
 

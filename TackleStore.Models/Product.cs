@@ -22,6 +22,7 @@ namespace TackleStore.Models
         public string? Body { get; set; }
         public List<Option> Options { get; set; } = new List<Option>();
         public List<Image> Images { get; set; } = new List<Image>();
+        public List<Variant> Variants { get; set; } = new List<Variant>();
     }
 
     public record ProductItem
@@ -33,7 +34,7 @@ namespace TackleStore.Models
         public string? Body { get; set; }
         public List<Option> Options { get; set; } = new List<Option>();
         public List<Image> Images { get; set; } = new List<Image>();
-        public double Price { get; set; }
+        public List<Variant> Variants { get; set; } = new List<Variant>();
     }
 
     public record Variant

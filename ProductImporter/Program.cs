@@ -36,12 +36,23 @@ Task.Run(async () =>
         CollectionId = x.CollectionId,
         Images = x.Images,
         Options = x.Options,
-        Title = x.Title
+        Title = x.Title,
+        Variants = x.Variants
     });
 
     foreach (var product in items)
     {
-        await productContainer.CreateItemAsync(product);
+        try
+        {
+
+            await productContainer.CreateItemAsync(product);
+
+            Console.WriteLine($"{product.Title} uploaded!");
+        }
+        catch (System.Exception ex)
+        {
+
+        }
     }
    // await Task.WhenAll(productTasks);
 });
@@ -59,9 +70,11 @@ Task.Run(async () =>
     foreach (var collection in items)
     {
         await collectionsContainer.CreateItemAsync(collection);
+
+        Console.WriteLine($"{collection.Title} uploaded!");
     }
 
-  // await Task.WhenAll(collectionTasks);
+    // await Task.WhenAll(collectionTasks);
 
     Console.WriteLine("Collection import has finished");
 });
