@@ -9,6 +9,7 @@ using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
 using Microsoft.Azure.Search;
 using System.Linq;
+using TackleStore.Models;
 
 namespace Functions
 {

@@ -5,7 +5,7 @@
         <div class="carousel slide" data-bs-ride="carousel">
             <div class="carousel-inner">
                 <div class="carousel-item active">
-                    <img src="@Item.Images[CurrentImage]" class="d-block w-100" alt="...">
+                    <img src="@Item.Images[CurrentImage].Src" class="d-block w-100" alt="...">
                 </div>
             </div>
         </div>
@@ -17,12 +17,12 @@
     <button class="btn btn-primary" @onclick="@Next">Next</button>
 
     <h2>@Item.Title</h2>
-    <span>@Item.Price</span>
+    @*<span>@Item.Price</span>*@
     <EditForm Model="@FormModel" OnValidSubmit="@AddToCart">
         <InputText @bind-Value="FormModel.Quantity" />
         <button type="submit" class="btn btn-primary">Add to cart</button>
     </EditForm>
-    <p>@Item.Description</p>
+    <p>@Item.Body</p>
 
 </div>
 }
@@ -30,9 +30,9 @@
 @code {
     private AddToCartForm FormModel { get; } = new AddToCartForm();
 
-    [Parameter] public string Sku { get; set; }
+    [Parameter] public string Id { get; set; }
 
-    private Product Item { get; set; }
+    private Models.ProductItem Item { get; set; }
 
     private int CurrentImage { get; set; }
 
@@ -41,10 +41,7 @@
     {
         await base.OnInitializedAsync();
 
-        Item = await ProductService.GetProduct(Sku);
-
-        Item.Images.Add("https://cdn.shopify.com/s/files/1/0479/4662/9285/products/Colmic_Balans2_960x.jpg?v=1599134542");
-        Item.Images.Add("https://cdn.shopify.com/s/files/1/0479/4662/9285/products/Colmic_Balans5_160x160.jpg?v=1599134550");
+        Item = await ProductService.GetProduct(Id);
     }
 
     private async Task AddToCart()
@@ -53,7 +50,7 @@
 
         int.TryParse(FormModel.Quantity, out quantity);
 
-        await CartService.Add(Item, quantity);
+        //await CartService.Add(Item, quantity);
     }
 
     private void Prev()

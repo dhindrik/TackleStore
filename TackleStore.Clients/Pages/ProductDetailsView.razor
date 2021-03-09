@@ -1,10 +1,10 @@
-﻿@page "/product/{Sku}"
+﻿@page "/product/{Id}"
 
-<BlazorWebView HeightRequest="100" VerticalOptions="LayoutOptions.Fill" HorizontalOptions="LayoutOptions.Fill">
-    <TackleStore.Clients.WebUI.Pages.ProductDetails Sku="@Sku" />
+<BlazorWebView VerticalOptions="LayoutOptions.Fill" HorizontalOptions="LayoutOptions.Fill">
+    <TackleStore.Clients.WebUI.Pages.ProductDetails Id="@Id" />
 </BlazorWebView>
 
 @code{
-    [Parameter]public string Sku { get; set; }
+    [Parameter]public string Id { get; set; }
 }
 

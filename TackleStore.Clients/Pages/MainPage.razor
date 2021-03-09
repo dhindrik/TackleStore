@@ -1,23 +1,68 @@
 ﻿<ContentPage>
     <StackLayout>
-
-        @if (Product != null)
-        {
-            <TackleStore.Clients.Components.ProductItem Product="@Product" />
-        }
+        <Grid ColumnDefinitions="2*, *" Padding="new Thickness(10)">
+            <GridCell>
+                <Entry @bind-Text="@SearchText" Placeholder="Search product" />
+            </GridCell>
+            <GridCell Column="1">
+                <Button Text="Search" BackgroundColor="Color.Blue" OnClick="@Search" />
+            </GridCell>
+        </Grid>
+        <StackLayout>
+            @foreach (var item in SearchResult)
+            {
+                <TackleStore.Clients.Components.ProductItem Product="@item" />
+            }
+        </StackLayout>
     </StackLayout>
 </ContentPage>
 
 @code{
-    private Product Product { get; set; }
+
+    private DateTime? lastKeyStroke;
+
+    private string searchText;
+    private string SearchText
+    {
+        get => searchText;
+        set
+        {
+            searchText = value;
+
+
+            Task.Run(async() => {
+
+                await Task.Delay(300);
+
+                if (searchText.Length > 2 && lastKeyStroke.HasValue && (DateTime.Now - lastKeyStroke.Value).Milliseconds > 300)
+                {
+                    await Search();
+                }
+            });
+
+            lastKeyStroke = DateTime.Now;
+        }
+    }
+    private List<SearchResultItem> SearchResult = new();
 
     protected async override Task OnInitializedAsync()
     {
         await base.OnInitializedAsync();
 
-        //Remove later
-        _= await ProductService.Get(1);
 
-        Product = await ProductService.GetProduct("colmic-jig");
+
+    }
+
+    private async Task Search()
+    {
+        MainThread.BeginInvokeOnMainThread(async() =>
+        {
+            lastKeyStroke = null;
+            SearchResult = await ProductService.Search(SearchText);
+
+            StateHasChanged();
+        });
+
+
     }
 }

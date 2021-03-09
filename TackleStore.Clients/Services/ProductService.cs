@@ -34,11 +34,38 @@ namespace TackleStore.Clients.Services
             return result;
         }
 
-        public static Task<Product> GetProduct(string sku)
+        public static async Task<ProductItem> GetProduct(string id)
         {
-            var product = products.Single(x => x.Sku == sku);
+            var client = new HttpClient();
+            var response = await client.GetAsync($"https://tacklestore.azurewebsites.net/api/GetProduct?id={id}");
 
-            return Task.FromResult(product);
+            response.EnsureSuccessStatusCode();
+
+            var json = await response.Content.ReadAsStringAsync();
+
+            var result = JsonSerializer.Deserialize<ProductItem>(json, new JsonSerializerOptions()
+            {
+                PropertyNameCaseInsensitive = true
+            });
+
+            return result;
+        }
+
+        public static async Task<List<SearchResultItem>> Search(string text)
+        {
+            var client = new HttpClient();
+            var response = await client.GetAsync($"https://tacklestore.azurewebsites.net/api/SearchProducts?text={text}");
+
+            response.EnsureSuccessStatusCode();
+
+            var json = await response.Content.ReadAsStringAsync();
+
+            var result = JsonSerializer.Deserialize<List<SearchResultItem>>(json, new JsonSerializerOptions()
+            {
+                PropertyNameCaseInsensitive = true
+            });
+
+            return result;
         }
     }
 }

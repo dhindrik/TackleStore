@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Security.Cryptography.X509Certificates;
 
-namespace Functions
+namespace TackleStore.Models
 {
     public class SearchResultItem
     {

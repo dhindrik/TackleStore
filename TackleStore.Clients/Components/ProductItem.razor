@@ -4,13 +4,19 @@
 <Grid ColumnDefinitions="100" RowDefinitions="*, 1">
     <TapGestureRecognizer OnTapped="@(async(x) => await ProductTapped(Product))" />
     <GridCell Column="0" Row="0">
-        <Image HeightRequest="50" WidthRequest="50" Source="@Product.Images.FirstOrDefault()" Aspect="Aspect.AspectFill" />
-        <Image HeightRequest="50" WidthRequest="50" Source="@Product.Images.FirstOrDefault()" Aspect="Aspect.AspectFill" />
+        @if (Product.Image is not null)
+        {
+            <Image HeightRequest="50" WidthRequest="50" Source="@Product.Image" Aspect="Aspect.AspectFill" />
+        }
     </GridCell>
     <GridCell Column="1" Row="0">
         <StackLayout>
             <Label Text="@Product.Title" FontAttributes="FontAttributes.Bold" />
-            <Label Text="@Product.Price.ToString("C2")" />
+
+            @{
+                var priceString = $"From: {Product.Price.ToString("C2")}";
+                <Label Text="@priceString" />
+            }
         </StackLayout>
     </GridCell>
     <GridCell Row="1" Column="0" ColumnSpan="2">
@@ -20,10 +26,18 @@
 
 @code {
 
-    [Parameter] public Product Product { get; set; }
+        [Parameter] public Models.SearchResultItem Product { get; set; }
 
-    private async Task ProductTapped(Product product)
+
+    protected async override Task OnParametersSetAsync()
     {
-        await NavigationManager.NavigateToAsync($"/product/{product.Sku}");
+        await base.OnParametersSetAsync();
+
+      
+    }
+
+    private async Task ProductTapped(Models.SearchResultItem product)
+    {
+        await NavigationManager.NavigateToAsync($"/product/{product.Id}");
     }
 }
