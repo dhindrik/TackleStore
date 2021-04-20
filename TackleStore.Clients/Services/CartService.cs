@@ -10,7 +10,8 @@ namespace TackleStore.Clients.Services
 {
     public record CartItem
     {
-        public Product Product { get; set; }
+        public ProductItem Product { get; set; }
+        public Variant Variant { get; set; }
         public int Quantity { get; set; }
         public string QuantityText
         {
@@ -30,7 +31,7 @@ namespace TackleStore.Clients.Services
         {
             get
             {
-                return Quantity * Product.Price;
+                return Quantity * Variant.Price;
             }
         }
     }
@@ -39,9 +40,9 @@ namespace TackleStore.Clients.Services
     {
         public static List<CartItem> items = new ();
 
-        public static Task Add(Product product, int quantity = 1)
+        public static Task Add(ProductItem product, Variant variant, int quantity = 1)
         {
-            var item = items.SingleOrDefault(x => x.Product.Sku == product.Sku);
+            var item = items.SingleOrDefault(x => x.Product.Id == product.Id);
 
             if (item != null)
             {
@@ -52,6 +53,7 @@ namespace TackleStore.Clients.Services
             item = new CartItem()
             {
                 Product = product,
+                Variant = variant,
                 Quantity = quantity
             };
 

@@ -9,20 +9,24 @@
                         <Grid ColumnDefinitions="100, *, *, *"
                               RowDefinitions="*,*,1">
                             <GridCell Column="0" RowSpan="2">
-                                <Image Aspect="Aspect.AspectFill" Source="@item.Product.Images.FirstOrDefault()" />
+                                @if (@item.Product.Images.FirstOrDefault() == null)
+                                {
+
+                                <Image Aspect="Aspect.AspectFill" Source="@item.Product.Images.First().Src" />
+                                }
                             </GridCell>
                             <GridCell Column="1" ColumnSpan="3">
                                 <Label VerticalOptions="LayoutOptions.Center" Text="@item.Product.Title" FontAttributes="FontAttributes.Bold" />
                             </GridCell>
                             <GridCell Column="1" Row="1">
-                                <Label VerticalOptions="LayoutOptions.Center" Text="@item.Product.Price.ToString("C")" />
+                                <Label VerticalOptions="LayoutOptions.Center" Text="@item.Variant.Price.ToString("C")" />
                             </GridCell>
                             <GridCell Column="2" Row="1">
                                 <Entry VerticalOptions="LayoutOptions.Center" @bind-Text="@item.QuantityText" OnUnfocused="EntryUnfocused" />
                             </GridCell>
                             <GridCell Column="3" Row="1">
                                 @{
-                                    var totalPrice = item.Quantity * item.Product.Price;
+                                    var totalPrice = item.Quantity * item.Variant.Price;
                                 }
                                 <Label VerticalOptions="LayoutOptions.Center" Text="@totalPrice.ToString("C")" />
                             </GridCell>

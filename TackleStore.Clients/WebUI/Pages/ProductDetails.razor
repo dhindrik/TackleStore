@@ -50,7 +50,7 @@
 
         int.TryParse(FormModel.Quantity, out quantity);
 
-        //await CartService.Add(Item, quantity);
+        await CartService.Add(Item, Item.Variants.First(), quantity);
     }
 
     private void Prev()
